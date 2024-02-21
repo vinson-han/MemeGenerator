@@ -1,6 +1,6 @@
 ## About
 
-React React Project that Generate Random Memes
+React Project that Generate Random Memes
 and allows you to write text on top of meme. Learned about styling React, events, and forms.
 
 ### Technologies
