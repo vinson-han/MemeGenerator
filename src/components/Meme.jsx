@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import "../style.css";
+
 const Meme = () => {
   const [meme, setMeme] = useState({
     topText: "",
@@ -9,14 +11,22 @@ const Meme = () => {
   const [allMemes, setAllMemes] = useState("");
   const [random, setRandom] = useState(0);
 
+  const { isLoading, data, error } = useQuery({
+    queryKey: ["getMemesApi"],
+    queryFn: () =>
+      fetch("https://api.imgflip.com/get_memes").then((res) => res.json()),
+  });
+
+  // https://api.imgflip.com/get_memes
   useEffect(() => {
-    fetch("https://api.imgflip.com/get_memes")
-      .then((res) => res.json())
-      .then((data) => {
-        setAllMemes(data.data.memes);
-        setMeme({ ...data.data.memes, img: data.data.memes[random].url });
-      });
-  }, []);
+    if (data) {
+      setAllMemes(data.data.memes);
+      setMeme({ ...data.data.memes, img: data.data.memes[random].url });
+    }
+  }, [data]);
+
+  if (isLoading) return <h1>Loading</h1>;
+  if (error) return <pre>{JSON.stringify(error)}</pre>;
 
   const generateRandomNumber = (e) => {
     e.preventDefault();
